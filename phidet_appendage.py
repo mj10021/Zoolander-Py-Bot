@@ -2,6 +2,7 @@
 
 import sys
 from ctypes import *
+import time
 from time import sleep
 
 
@@ -19,7 +20,7 @@ servo_index = 0
 
 if len(sys.argv) > 1 and int(sys.argv[1]) in range(8) : servo_index = int(sys.argv[1]);
 
-print( "starting servo index is %s\n" % str(servo_index) )
+print("starting servo index is %s\n" % str(servo_index))
 
 
 
@@ -42,6 +43,7 @@ velocityList = [0,0,0,0,0,0,0,0]
 
 # display information
 
+
 def DisplayDeviceInfo():
     print("|------------|----------------------------------|--------------|------------|")
     print("|- Attached -|-              Type              -|- Serial No. -|-  Version -|")
@@ -53,16 +55,18 @@ def DisplayDeviceInfo():
 
 # event handler callback functions
 
+
 def Attached(e):
     attached = e.device
     print("Servo %i Attached!" % (attached.getSerialNum()))
+
 
 def Detached(e):
     detached = e.device
     print("Servo %i Detached!" % (detached.getSerialNum()))
 
 
-HOTFIX
+#HOTFIX!!!!!!!!!!!!!!
 #def Error(e):
     #try:
         #source = e.device
@@ -167,30 +171,25 @@ else:
 SetupServo(0)
 SetupServo(1)
 
-RIGHT = 1
-LEFT = 3
-
 
 #function to turn either 90* or 270* right
 def turn(right_or_left):
 
-    if right_or_left != RIGHT or right_or_left != LEFT:
-        right_or_left = 0
-
-    #turns 90* either 0, 1, or 3 times depending on input
-    for x in xrange(right_or_left):
+    #turns 90* either 1 or 3 times depending on input
+    for i in range(right_or_left):
         advancedServo.setPosition(0, (int(current_speed) - 20))
-        time.sleep(100)
+        time.sleep(5)
         advancedServo.setPosition(0, int(current_speed))
-        time.sleep(100)
-
+        if right_or_left > 1 :
+            time.sleep(5)
 
 #function to control manual steering of robot
 def steer(new_angle):
     if 134 < int(new_angle) < 181:
-        new_angle = steer_angle
+        steer_angle = int(new_angle)
         if steer_angle > 0:
             advancedServo.setPosition(0, int(steer_angle))
+            sleep(5)
     elif "x" == new_angle:
         exit(1)
     #else:
@@ -199,15 +198,15 @@ def steer(new_angle):
 
 #function to spin in circles for a user defined time
 def dance_for(milliseconds):
-    advancedServo.setPosition(0, (180 - current_speed))
+    advancedServo.setPosition(0, (180 - int(current_speed)))
     time.sleep(milliseconds)
-    advancedServo.setPosition(0, current_speed)
+    advancedServo.setPosition(0, int(current_speed))
 
+
+current_speed = 90
 
 #run for ever
 while(true):
-
-    current_speed = 90
 
     advancedServo.setPosition(0, int(current_speed))
     advancedServo.setPosition(1, int(current_speed))
@@ -221,22 +220,22 @@ while(true):
     if "s" == mode_selection:
         new_speed = raw_input("Set forward speed 90-180:")
         if 89 < int(new_speed) < 181:
-            new_speed = current_speed
+            current_speed = int(new_speed)
             print("Speed set to %s." % str(current_speed))
 
         #checks for 'x' to exit
         elif "x" == new_speed:
             exit(1)
         else:
-            print("Is %s in between 90 and 180, Hansel." % str(new_speed))
+            print("Is %s in between 90 and 180, Hansel?" % str(new_speed))
 
     #turns 90* using the turn function
     elif "r" == mode_selection:
-        turn(RIGHT)
+        turn(1)
 
     #turns 270* using the turn function
     elif "l" == mode_selection:
-        turn(LEFT)
+        turn(3)
 
     #spins in circles (i.e. brakdance)
     elif "b" == mode_selection:
@@ -262,3 +261,4 @@ while(true):
     #if someone does not select a real option, yell at them!
     else:
         print("Cool story, Hansel.")
+
