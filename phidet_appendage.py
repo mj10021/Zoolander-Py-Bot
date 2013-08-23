@@ -66,14 +66,13 @@ def Detached(e):
     print("Servo %i Detached!" % (detached.getSerialNum()))
 
 
-#HOTFIX!!!!!!!!!!!!!!
-#def Error(e):
-    #try:
-        #source = e.device
-    #print("Phidget Error %i: %s %s" % (int(source.getSerialNum()), str(e.eCode), str(e.description))
+def Error(e):
+    try:
+        source = e.device
+        print("Phidget Error %i: %s %s" % int(source.getSerialNum()), str(e.eCode), str(e.description))
 
-    #except PhidgetException as e:
-        #print("Phidget Exception %i: %s" % (e.code, e.details))
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
 
 def CurrentChanged(e):
     global currentList
@@ -185,7 +184,7 @@ def turn(right_or_left):
 
 #function to control manual steering of robot
 def steer(new_angle):
-    if 134 < int(new_angle) < 181:
+    if 89 < int(new_angle) < current_speed:
         steer_angle = int(new_angle)
         if steer_angle > 0:
             advancedServo.setPosition(0, int(steer_angle))
@@ -206,19 +205,19 @@ def dance_for(milliseconds):
 current_speed = 90
 
 #run for ever
-while(true):
+while(True):
 
     advancedServo.setPosition(0, int(current_speed))
     advancedServo.setPosition(1, int(current_speed))
 
     #get mode
-    mode_selection = raw_input("Press 's' to set speed, 'r' to turn right,\
+    mode_selection = input("Press 's' to set speed, 'r' to turn right,\
      'l' to turn left, 'b' to breakdance,\
       'm' to steer manually, or 'x' to exit:")
 
     #sets speed to given int
     if "s" == mode_selection:
-        new_speed = raw_input("Set forward speed 90-180:")
+        new_speed = input("Set forward speed 90-180:")
         if 89 < int(new_speed) < 181:
             current_speed = int(new_speed)
             print("Speed set to %s." % str(current_speed))
@@ -239,7 +238,7 @@ while(true):
 
     #spins in circles (i.e. brakdance)
     elif "b" == mode_selection:
-        dance_duration = raw_input("How long do you want me to dance for?")
+        dance_duration = input("How long do you want me to dance for?")
         if int(dance_duration) > 0:
             dance_for(int(dance_duration))
         else:
@@ -247,7 +246,7 @@ while(true):
 
     #accepts manual speed selection on motor 1
     elif "m" == mode_selection:
-        new_angle = raw_input("Set turn speed from 180-135:")
+        new_angle = input("Set turn speed from 90 to current speed:")
         if 134 < new_angle < 181:
             steer(int(new_angle))
         else:
@@ -256,6 +255,7 @@ while(true):
     #checks for 'x' to exit
     elif "x" == mode_selection:
         print("Relax.")
+        current_speed = 90
         exit(1)
 
     #if someone does not select a real option, yell at them!
