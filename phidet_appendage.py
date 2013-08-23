@@ -21,9 +21,6 @@ if len(sys.argv) > 1 and int(sys.argv[1]) in range(8) : servo_index = int(sys.ar
 
 print("starting servo index is %s\n" % str(servo_index))
 
-
-
-
 # create advancedServo object
 
 try:
@@ -213,8 +210,8 @@ while(True):
 
     #get mode
     mode_selection = raw_input("Press 's' to set speed, 'r' to turn right,\
-     'l' to turn left, 'b' to breakdance,\
-      'm' to steer manually, or 'x' to exit:\n")
+ 'l' to turn left, 'b' to breakdance,\
+ 'm' to steer manually, or 'x' to exit:\n")
 
     #sets speed to given int
     if "s" == mode_selection:
