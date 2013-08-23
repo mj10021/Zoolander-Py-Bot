@@ -1,5 +1,4 @@
 # python imports
-
 import sys
 from ctypes import *
 import time
@@ -173,26 +172,28 @@ SetupServo(1)
 
 #function to turn either 90* or 270* right
 def turn(right_or_left):
-
-    #turns 90* either 1 or 3 times depending on input
-    for i in range(right_or_left):
-        advancedServo.setPosition(0, (int(current_speed) - 20))
-        time.sleep(5)
-        advancedServo.setPosition(0, int(current_speed))
-        if right_or_left > 1 :
-            time.sleep(5)
+    while(True):
+        #turns 90* either 1 or 3 times depending on raw_input
+        for i in range(right_or_left):
+            advancedServo.setPosition(0, 90)
+            time.sleep(2.5)
+            advancedServo.setPosition(0, int(current_speed))
+            if right_or_left > 1 :
+                time.sleep(2.5)
+        break
 
 #function to control manual steering of robot
 def steer(new_angle):
-    if 89 < int(new_angle) < current_speed:
-        steer_angle = int(new_angle)
-        if steer_angle > 0:
+    while(True):
+        if 89 < int(new_angle) < current_speed:
+            steer_angle = int(new_angle)
             advancedServo.setPosition(0, int(steer_angle))
             sleep(5)
-    elif "x" == new_angle:
-        exit(1)
-    #else:
-        #pass
+            break
+        elif "x" == new_angle:
+            exit(1)
+        else:
+            break
 
 
 #function to spin in circles for a user defined time
@@ -211,13 +212,13 @@ while(True):
     advancedServo.setPosition(1, int(current_speed))
 
     #get mode
-    mode_selection = input("Press 's' to set speed, 'r' to turn right,\
+    mode_selection = raw_input("Press 's' to set speed, 'r' to turn right,\
      'l' to turn left, 'b' to breakdance,\
-      'm' to steer manually, or 'x' to exit:")
+      'm' to steer manually, or 'x' to exit:\n")
 
     #sets speed to given int
     if "s" == mode_selection:
-        new_speed = input("Set forward speed 90-180:")
+        new_speed = raw_input("Set forward speed 90-180:")
         if 89 < int(new_speed) < 181:
             current_speed = int(new_speed)
             print("Speed set to %s." % str(current_speed))
@@ -238,7 +239,7 @@ while(True):
 
     #spins in circles (i.e. brakdance)
     elif "b" == mode_selection:
-        dance_duration = input("How long do you want me to dance for?")
+        dance_duration = raw_input("How long do you want me to dance for?")
         if int(dance_duration) > 0:
             dance_for(int(dance_duration))
         else:
@@ -246,16 +247,17 @@ while(True):
 
     #accepts manual speed selection on motor 1
     elif "m" == mode_selection:
-        new_angle = input("Set turn speed from 90 to current speed:")
-        if 134 < new_angle < 181:
+        new_angle = raw_input("Set turn speed from 90 to current speed:")
+        if 89 < int(new_angle) < current_speed:
             steer(int(new_angle))
         else:
-            print("Is %s in between 135 and 180, Hansel." % str(new_angle))
+            print("Is %s in between 90 and and the current speed, Hansel?" % str(new_angle))
 
     #checks for 'x' to exit
     elif "x" == mode_selection:
+        advancedServo.setPosition(0, 90)
+        advancedServo.setPosition(1, 90)
         print("Relax.")
-        current_speed = 90
         exit(1)
 
     #if someone does not select a real option, yell at them!
